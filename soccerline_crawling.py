@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 from selenium import webdriver
 import re
 import time
@@ -19,38 +18,38 @@ def getLinks(url):
 
     driver.get(url)
     time.sleep(2)
-    html = driver.page_source
-    bsObj = BeautifulSoup(html, "html.parser")
 
-    table = bsObj.find("div",{"id":"boardListContainer"}).find("table")
+    # bsObj.find("div",{"id":"boardListContainer"}).find("table")
+    trList = driver.find_element_by_id("boardListContainer").find_elements_by_css_selector("table > tbody > tr")
 
-    for tr in table.tbody.findAll("tr"):
-        td = tr.findAll("td")[0].get_text()
+    for tr in trList :
+        td = tr.find_elements_by_tag_name("td")[0].text
         if td != "[공지]":
             data[index] = td
             index+=1
 
-    count = int(bsObj.find("div", {"class": "paging"}).strong.get_text())
+    # bsObj.find("div", {"class": "paging"}).strong.get_text())
+    count = int(driver.find_element_by_xpath("//div[@class='paging']//strong").text)
 
-    if count == 200:
+    if count == 1:
         getContent(data)
     else:
         currentLink = "http://soccerline.kr/board?categoryDepth01=5&page="+str(pageCount)
         getLinks(currentLink)
 
 def getContent(data):
-    print(len(data))
     for page in data:
         print(str(page))
         if page is not None:
             absoluteLink = "http://soccerline.kr/board/"+str(page)
             driver.get(absoluteLink)
             time.sleep(3)
-            html = driver.page_source
-            bsObj = BeautifulSoup(html, 'html.parser')
             try:
-                txtTitle = bsObj.find("div",{"class":"titBox"}).h2.get_text()
-                txtContent = bsObj.find("div",{"class":"txtBox"}).get_text()
+                # bsObj.find("div",{"class":"titBox"}).h2.get_text()
+                txtTitle = driver.find_element_by_xpath("//div[@class='titBox']//h2").text
+
+                # bsObj.find("div",{"class":"txtBox"}).get_text()
+                txtContent = driver.find_element_by_xpath("//div[@class='txtBox']").text
             except AttributeError as e:
                 print(str(e))
             else:
