@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 import re
 import time
 
@@ -20,16 +21,17 @@ def getLinks(url):
     time.sleep(2)
 
     # bsObj.find("div",{"id":"boardListContainer"}).find("table")
-    trList = driver.find_element_by_id("boardListContainer").find_elements_by_css_selector("table > tbody > tr")
+    # find_element_by_id("boardListContainer").find_elements_by_css_selector("table > tbody > tr")
+    trList = driver.find_elements(By.XPATH, "//div[@id='boardListContainer']//table//tbody//tr")
 
     for tr in trList :
-        td = tr.find_elements_by_tag_name("td")[0].text
+        td = tr.find_elements(By.TAG_NAME, "td")[0].text
         if td != "[공지]":
             data[index] = td
             index+=1
 
     # bsObj.find("div", {"class": "paging"}).strong.get_text())
-    count = int(driver.find_element_by_xpath("//div[@class='paging']//strong").text)
+    count = int(driver.find_element(By.XPATH, "//div[@class='paging']//strong").text)
 
     if count == 1:
         getContent(data)
@@ -46,10 +48,10 @@ def getContent(data):
             time.sleep(3)
             try:
                 # bsObj.find("div",{"class":"titBox"}).h2.get_text()
-                txtTitle = driver.find_element_by_xpath("//div[@class='titBox']//h2").text
+                txtTitle = driver.find_element(By.XPATH, "//div[@class='titBox']//h2").text
 
                 # bsObj.find("div",{"class":"txtBox"}).get_text()
-                txtContent = driver.find_element_by_xpath("//div[@class='txtBox']").text
+                txtContent = driver.find_element(By.XPATH, "//div[@class='txtBox']").text
             except AttributeError as e:
                 print(str(e))
             else:
