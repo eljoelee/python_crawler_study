@@ -20,7 +20,6 @@ def getLinks(url):
     driver.get(url)
     time.sleep(2)
 
-    # bsObj.find("div",{"id":"boardListContainer"}).find("table")
     # find_element_by_id("boardListContainer").find_elements_by_css_selector("table > tbody > tr")
     trList = driver.find_elements(By.XPATH, "//div[@id='boardListContainer']//table//tbody//tr")
 
