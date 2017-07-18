@@ -3,17 +3,8 @@ from selenium.webdriver.common.by import By
 import re
 import time
 
-driver = webdriver.Chrome('D:/chromedriver')
-pageCount = 0
-index = 0
-data = [None] * 5000
-
-f = open("싸줄.txt",'w', encoding="UTF8")
-
 def getLinks(url):
-    global pageCount
-    global data
-    global index
+    global pageCount, data, index
 
     pageCount += 1
 
@@ -25,6 +16,10 @@ def getLinks(url):
 
     for tr in trList :
         td = tr.find_elements(By.TAG_NAME, "td")[0].text
+
+        # Unit Testing
+        assert td is not None
+
         if td != "[공지]":
             data[index] = td
             index+=1
@@ -41,6 +36,10 @@ def getLinks(url):
 def getContent(data):
     for page in data:
         print(str(page))
+
+        # Unit Testing
+        assert page is not None
+
         if page is not None:
             absoluteLink = "http://soccerline.kr/board/"+str(page)
             driver.get(absoluteLink)
@@ -61,7 +60,17 @@ def getContent(data):
             pass
 
 if __name__ == '__main__':
+    driver = webdriver.Chrome('D:/chromedriver')
+
+    pageCount = 0
+    index = 0
+    data = [None] * 5000
+
+    f = open("싸줄.txt", 'w', encoding="UTF8")
+
     url = "http://soccerline.kr/board?categoryDepth01=5"
+
     getLinks(url)
+
     driver.close()
     f.close()
